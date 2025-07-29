@@ -98,7 +98,7 @@ class ReferralHandler:
         bot_username = context.bot.username
         referral_link = f"https://t.me/{bot_username}?start={user.referral_code}"
         
-        share_message = f"""
+       """share_message = f"""
 🔗 شارك رابط الإحالة واربح {Config.REFERRAL_PERCENTAGE}%!
 
 {referral_link}
