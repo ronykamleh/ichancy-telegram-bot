@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  telegram_bot:
+    build: .
+    container_name: arabic_telegram_bot
+    restart: unless-stopped
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - BOT_USERNAME=${BOT_USERNAME}
+      - DATABASE_URL=${DATABASE_URL}
+      - ADMIN_IDS=${ADMIN_IDS}
+      - MIN_DEPOSIT=${MIN_DEPOSIT}
+      - MAX_DEPOSIT=${MAX_DEPOSIT}
+      - MIN_WITHDRAWAL=${MIN_WITHDRAWAL}
+      - MAX_WITHDRAWAL=${MAX_WITHDRAWAL}
+      - WITHDRAWAL_FEE=${WITHDRAWAL_FEE}
+      - REFERRAL_PERCENTAGE=${REFERRAL_PERCENTAGE}
+      - MIN_GIFT=${MIN_GIFT}
+      - SUPPORT_PHONE=${SUPPORT_PHONE}
+      - SUPPORT_EMAIL=${SUPPORT_EMAIL}
+      - SUPPORT_HOURS=${SUPPORT_HOURS}
+      - DEBUG=${DEBUG}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    networks:
+      - bot_network
+
+  # قاعدة بيانات MySQL (اختيارية)
+  mysql:
+    image: mysql:8.0
+    container_name: bot_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql_init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    networks:
+      - bot_network
+    profiles:
+      - mysql
+
+volumes:
+  mysql_data:
+
+networks:
+  bot_network:
+    driver: bridge
+
